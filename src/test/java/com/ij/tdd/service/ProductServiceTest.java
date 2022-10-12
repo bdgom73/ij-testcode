@@ -22,7 +22,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(SpringExtension.class)
-@Import({DefaultProductService.class, ProductRepository.class})
+@Import({DefaultProductService.class})
 class ProductServiceTest {
     @MockBean
     ProductRepository productRepository;
