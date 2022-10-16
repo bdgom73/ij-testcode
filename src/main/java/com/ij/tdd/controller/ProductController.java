@@ -36,8 +36,8 @@ public class ProductController {
         return ResponseEntity.ok(ObjectResponse.ok(productService.update(productId, productParam)));
     }
 
-    @DeleteMapping("/v1/products/{productId}")
-    public ResponseEntity<ApiResponse> delete(@PathVariable Long productId) {
+    @DeleteMapping(value = "/v1/products/{productId}")
+    public ResponseEntity<ApiResponse> delete(@PathVariable("productId") Long productId) {
         productService.delete(productId);
         return ResponseEntity.ok(ApiResponse.ok());
     }

@@ -1,5 +1,7 @@
 package com.ij.tdd.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.ij.tdd.dto.ProductParam;
 import com.ij.tdd.entity.Product;
 import com.ij.tdd.service.ProductService;
 import org.junit.jupiter.api.DisplayName;
@@ -10,6 +12,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,6 +33,8 @@ class ProductControllerTest {
 
     @MockBean
     ProductService productService;
+
+    ObjectMapper objectMapper = new ObjectMapper();
 
     @Test
     @DisplayName("GET - 상품 목록")
@@ -57,6 +62,57 @@ class ProductControllerTest {
                 .andExpect(jsonPath("$.name").exists())
                 .andExpect(jsonPath("$.price").exists())
                 .andExpect(jsonPath("$.contents").exists())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("POST - 상품 등록")
+    void createProduct() throws Exception {
+        ProductParam param
+                = new ProductParam(
+                        "productA",
+                "productA is ...",
+                1000);
+
+        String content = objectMapper.writeValueAsString(param);
+
+        mockMvc.perform(
+                post("/v1/products")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                )
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("PUT - 상품 수정")
+    void updateProduct() throws Exception {
+        ProductParam param
+                = new ProductParam(
+                "updateProductA",
+                "productA update!",
+                2000);
+
+        String content = objectMapper.writeValueAsString(param);
+
+        mockMvc.perform(
+                        put("/v1/products/1")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(content)
+                )
+                .andExpect(status().isOk())
+                .andDo(print());
+    }
+
+    @Test
+    @DisplayName("DELETE - 상품 삭제")
+    void deleteProduct() throws Exception {
+        mockMvc.perform(delete("/v1/products/1")
+                        .contentType(MediaType.APPLICATION_JSON)
+                
+                )
+                .andExpect(status().isOk())
                 .andDo(print());
     }
 
